@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="paper_format" model="report.paperformat">
+        <field name="name">Customer Invoice</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_left">0</field>
+        <field name="margin_top">5</field>
+        <field name="margin_right">0</field>
+        <field name="margin_bottom">30</field>
+
+
+    </record>
+
+    <report id="action_report_daily_sales"
+            string="Daily Sales Report"
+            model="pos.report"
+            report_type="qweb-pdf"
+            name="customer_invoice_report.daily_sales_report_new"
+            file="customer_invoice_report.daily_sales_report_new"
+            paperformat="paper_format"
+    />
+
+    <report id="action_report_daily_sales2"
+            string="Daily Sales Report"
+            model="pos.report"
+            report_type="qweb-pdf"
+            name="customer_invoice_report.daily_sales_report_new2"
+            file="customer_invoice_report.daily_sales_report_new2"
+            paperformat="paper_format"
+    />
+
+    <template id="custom_header">
+
+        <div class="o_header" >
+            <table width="100%" style="border-bottom:2px solid black;">
+                <tr>
+                    <td width="30%">
+                        <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo" height="100px" width="100px"/>
+                    </td>
+                    <td width="70%">
+                        <table width="100%">
+                            <tr>
+                                <td style="font-size:24px; font-weight:bold; font-family:'Calibri'; text-align:center;"><span  t-field="res_company.company_name_arabic" ></span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size:24px; font-family:'Calibri'; font-weight:bold; text-align:center;"><span  t-field="res_company.name" ></span></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size:18px; font-family:'Calibri'; font-weight:bold; text-align:center;"><span style="font-family:'Calibri';"  t-field="res_company.account_no" />:VAT No./<span style="font-family:'Calibri';"  t-field="res_company.vat" ></span></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+
+    </template>
+
+
+    <template id="custom_footer">
+        <div class="footer" >
+            <table width="100%" style="border-top:2px solid black;">
+                <tr>
+                    <td width="40%">
+                        <table width="100%">
+                            <tr>
+                                <td style="font-size:16px;"><span class="o_force_ltr" t-field="res_company.street"/><br></br><span class="o_force_ltr" t-field="res_company.street2"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size:16px;"><span style="font-weight:bold; ">TEL :</span> <span class="o_force_ltr" t-field="res_company.phone"/><span style="font-weight:bold;">Fax</span><span t-field="res_company.fax"/></td>
+                            </tr>
+                            <tr>
+                                <td style="font-size:16px;"><span style="font-weight:bold; ">Email :</span>301327474810003 <span t-field="res_company.email"/></td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="60%">
+                        <table width="100%">
+                            <tr>
+                                <td style="text-align:right; font-size:16px;"><span  t-field="res_company.company_address_arabic"/><br></br><span  t-field="res_company.company_address_arabic2"/></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; font-size:16px;"><span  t-field="res_company.fax"/><span style="font-weight:bold;">فاكس</span><span t-field="res_company.phone"/><span style="font-weight:bold;">هاتف:</span></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align:right; font-size:16px;"><span style="font-weight:bold; ">: بريد الكتروني</span><span t-field="res_company.email"/></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </template>
+
+
+    <template id="daily_sales_report_new">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <t t-call="customer_invoice_report.custom_header"></t>
+                        <t t-call="customer_invoice_report.custom_footer"></t>
+                        <style>
+                            .headings{
+                            font-size:18px;
+                            font-weight:bold;
+                            font-family:'Calibri';
+                            }
+                            .text
+                            {
+                            font-size:18px;
+                            font-family:'Calibri';
+                            }
+
+                        </style>
+                        <table width="100%" style="margin-top:20px;">
+                            <tr>
+                                <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px">Tax Invoice / الفاتورة</td> <td width="25%"></td>
+                            </tr>
+                        </table>
+
+
+
+                        <table width="100%" style="margin-top:20px;">
+
+                            <tr>
+                                <td  width="50%" class="headings">Invoice No / رقم الفاتورة :</td>
+                                <td  width="50%" class="text"> <span t-field="doc.name"/></td>
+                            </tr>
+                            <tr>
+                                <td width="50%" class="headings">Invocie  Date /  تاريخ الفاتورة:</td>
+                                <td  width="50%" class="text"> <span t-field="doc.invoice_date"/></td>
+                            </tr>
+                            <tr>
+                                <td width="50%" class="headings">Customer Name /  اسم العميل:</td>
+                                <td width="50%"  class="text"> <span t-field="doc.partner_id.name"/><br></br><span t-field="doc.partner_id.partner_name_arabic"/></td>
+
+                            </tr>
+                            <tr>
+                                <td  width="50%" class="headings">VAT NO /  رقم ضريبة للعميل :</td>
+                                <td width="50%" class="text"> <span t-field="doc.partner_id.vat"/></td>
+
+                            </tr>
+                            <tr>
+                                <td width="50%" class="headings">Address / عنوان :</td>
+                                <td width="50%" class="text"> <span t-field="doc.partner_id.street"/><br></br><span t-field="doc.partner_id.partner_address_arabic"/></td>
+                            </tr>
+
+                        </table>
+
+                        <table width="100%" style="margin-top:20px; border:1px solid black;">
+
+                            <tr>
+                                <td width="10%" style="text-align:center; font-family:'Calibri'; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>الرقم</span><br></br>SR NO</td>
+                                <td width="40%"  style="text-align:center; font-family:'Calibri'; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>الوصف</span><br></br>DESCRIPTION</td>
+                                <td width="25%"  style="text-align:center; font-family:'Calibri'; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>تاريخ الاستحقاق</span><br></br>DUE DATE</td>
+                                <td width="25%"  style="text-align:center; font-family:'Calibri'; background-color:#b9d0ed; padding:5px;  font-weight:bold; font-size:18px;"><span>المبلغ بالريال</span><br></br>AMOUNT - SAR</td>
+                            </tr>
+                            <tbody>
+                                <t t-set="serial_number" t-value="1"/>
+                                 <t t-set="total" t-value="" />
+                                <tr t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id == s)" t-as="p">
+                                     <t t-set="flag" t-value="True" />
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:16px;"> <span t-esc="serial_number"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:16px;"><span t-field="p.product_id.name"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-field="doc.invoice_date_due"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-esc="p.price_subtotal"/></td>
+
+                                    <t t-set="total" t-value="p.price_subtotal" />
+                                    <t t-set="serial_number" t-value="serial_number+1"/>
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table width="100%" style="margin-top:20px; border:1px solid black;" >
+                            <tr>
+                                <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; border-bottom:1px solid black; font-weight:bold;"><span>ايجار المعدات قبل ضريبة القيمة المضافة</span><br></br>Rent payable before VAT</td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="total"/><br></br></td>
+                            </tr>
+                            <tr>
+                                <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><span>ضريبة القيمة المضافة</span><br></br>VAT % </td>
+                                <t t-set="total"  t-value="doc.amount_total-doc.amount_untaxed" />
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'{0:,.3f}'.format(total)"/><br></br></td>
+
+                            </tr>
+                            <tr>
+                                <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; font-weight:bold;"><span>جمالي المطلوب</span><br></br>Rent payable after VAT</td>
+                                <t t-set="total2" t-value="doc.amount_untaxed+total" />
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;"><br></br><span t-esc="'{0:,.3f}'.format(total2)"/></td>
+                            </tr>
+                        </table>
+
+
+
+
+                        <div style="margin-top:20px; font-size:14px; page-break-before:auto;">
+                            <span  style="" t-field="res_company.company_details" ></span>
+                        </div>
+
+
+                        <table width="100%" style="margin-top:20px; page-break-before:auto;">
+                            <tr>
+                                <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px;"><span>ختم وتوقيع<br></br></span>Stamp and Sign</td> <td width="25%"></td>
+                            </tr>
+                        </table>
+
+                        <table width="100%" style="margin-top:20px; page-break-before:auto;">
+                            <tr>
+                                <td width="50%" style="text-align:left; font-size:14px;  padding:3px; ">
+                                    <ul>
+                                        <li>Note: 5% VAT rate is applicable for the contracts</li>
+                                        <li>which were signed before May 11, 2020  in compliance with transitional guidelines issued by GAZT.</li>
+                                    </ul>
+                                </td>
+                                <td width="50%" style="text-align:left; font-size:14px;  padding:3px;">
+                                    <ul>
+                                        <li>ملاحظة :يُطبق معدل ضريبة القيمة المضافة 5٪ على العقود التي تم توقيعها</li>
+                                        <li>قبل 11 مايو 2020 وفقًا للإرشادات الانتقالية الصادرة عن الهيئة العامة للزكاة والدخل.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                    <p style="page-break-before:always;"> </p>
+                </t>
+
+
+
+
+            </t>
+        </t>
+    </template>
+
+    <template id="daily_sales_report_new2">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <t t-call="customer_invoice_report.custom_header"></t>
+                        <t t-call="customer_invoice_report.custom_footer"></t>
+                        <style>
+                            .headings{
+                            font-size:18px;
+                            font-weight:bold;
+                            }
+                            .text
+                            {
+                            font-size:18px;
+                            font-family: sans-serif;
+                            }
+
+                        </style>
+                        <table width="100%" style="margin-top:20px;">
+                            <tr>
+                                <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px">Tax Invoice / الفاتورة</td> <td width="25%"></td>
+                            </tr>
+                        </table>
+
+
+
+                        <table width="100%" style="margin-top:20px;">
+
+                            <tr>
+                                <td width="50%" class="headings">Invoice No / رقم الفاتورة :</td>
+                                <td width="50%" class="text"> <span t-esc="doc['invoice_number']"/></td>
+
+                            </tr>
+                            <tr>
+                                <td width="50%" class="headings">Invocie  Date /  تاريخ الفاتورة:</td>
+                                <td width="50%" class="text"> <span t-esc="doc['invoice_date']"/></td>
+
+                            </tr>
+                            <tr>
+                                <td width="50%" class="headings">Customer Name /  اسم العميل:</td>
+                                <td width="50%" class="text"> <span t-esc="doc['partner_name']"/><br></br><span t-esc="doc['partner_name2']"/></td>
+
+
+                            </tr>
+                            <tr>
+                                <td  width="50%" class="headings">VAT NO /  رقم ضريبة للعميل :</td>
+                                <td width="50%" class="text"> <span t-esc="doc['tax_no']"/></td>
+                            </tr>
+                            <tr>
+                                <td  width="50%" class="headings">Address / عنوان :</td>
+                                <td width="50%" class="text"> <span t-esc="doc['address']"/><br></br><span t-esc="doc['partner_address2']"/></td>
+                            </tr>
+
+                        </table>
+
+                        <table width="100%" style="margin-top:20px; border:1px solid black;">
+
+                            <tr>
+                                <td width="10%" style="text-align:center; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>الرقم</span><br></br>SR NO</td>
+                                <td width="40%"  style="text-align:center; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>الوصف</span><br></br>DESCRIPTION</td>
+                                <td width="25%"  style="text-align:center; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>تاريخ الاستحقاق</span><br></br>DUE DATE</td>
+                                <td width="25%"  style="text-align:center; background-color:#b9d0ed; padding:5px;  font-weight:bold; font-size:18px;"><span>المبلغ بالريال</span><br></br>AMOUNT - SAR</td>
+                            </tr>
+                            <tbody>
+                                <t t-set="serial_number" t-value="1"/>
+                                <tr t-foreach="doc['line_items']" t-as="p">
+
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:18px;"> <span t-esc="serial_number"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:18px;"><span t-esc="p.get('disc')"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-weight:bold; font-size:18px;"><span t-esc="p.get('due_date')"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-weight:bold; font-size:18px;"><span t-esc="p.get('amount_sar')"/></td>
+                                    <t t-set="serial_number" t-value="serial_number+1"/>
+                                </tr>
+
+
+                            </tbody>
+                        </table>
+
+                        <table width="100%" style="margin-top:20px; border:1px solid black;">
+                            <tr>
+                                <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; border-bottom:1px solid black; font-weight:bold;"><span>ايجار المعدات قبل ضريبة القيمة المضافة</span><br></br>Rent payable before VAT</td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{0:,.3f}'.format(doc['amount_untax'])"/></td>
+                            </tr>
+                            <tr>
+                                <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><span>ضريبة القيمة المضافة</span><br></br>VAT % </td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{0:,.3f}'.format(doc['tax_value'])"/> </td>
+                            </tr>
+                            <tr>
+                                <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; font-weight:bold;"><span>جمالي المطلوب</span><br></br>Rent payable after VAT</td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  font-weight:bold;"><br></br><span t-esc="'{0:,.3f}'.format(doc['total_value'])"/></td>
+                            </tr>
+                        </table>
+
+                        <div style="margin-top:20px; font-size:14px; page-break-before:auto;">
+                            <span  style="" t-field="res_company.company_details" ></span>
+                        </div>
+
+
+                        <table width="100%" style="margin-top:15px; page-break-before:auto;">
+                            <tr>
+                                <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px;"><span>ختم وتوقيع<br></br></span>Stamp and Sign</td> <td width="25%"></td>
+                            </tr>
+                        </table>
+
+
+                        <table width="100%" style="margin-top:20px; page-break-before:auto;">
+                            <tr>
+                                <td width="50%" style="text-align:left; font-size:14px;  padding:3px; ">
+                                    <ul>
+                                        <li>Note: 5% VAT rate is applicable for the contracts</li>
+                                        <li>which were signed before May 11, 2020  in compliance with transitional guidelines issued by GAZT.</li>
+                                    </ul>
+                                </td>
+                                <td width="50%" style="text-align:left; font-size:11px;  padding:3px;">
+                                    <ul>
+                                        <li>ملاحظة :يُطبق معدل ضريبة القيمة المضافة 5٪ على العقود التي تم توقيعها</li>
+                                        <li>قبل 11 مايو 2020 وفقًا للإرشادات الانتقالية الصادرة عن الهيئة العامة للزكاة والدخل.</li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                    <p style="page-break-before:always;"> </p>
+                </t>
+
+
+
+
+            </t>
+        </t>
+    </template>
+
+
+
+</odoo>

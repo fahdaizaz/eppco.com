@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_res_partner_form_inherited" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.report</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="partner_name_arabic" string="Name(Arabic)"/>
+                </xpath>
+                  <xpath expr="//field[@name='street2']" position="after">
+                    <field name="partner_address_arabic"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

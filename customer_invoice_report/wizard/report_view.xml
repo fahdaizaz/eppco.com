@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_wizard_form" model="ir.ui.view">
+        <field name="name">Form</field>
+        <field name="model">pos.report</field>
+        <field name="arch" type="xml">
+            <form string="Customer Invoice  Report">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="start_date" string="From" required="1" />
+                            <field name="end_date" string="To" required="1" />
+                             <field name="service_type" string="Type" required="1" />
+                        </group>
+
+                         <group>
+                            <field name="all_customer" string="All Customer"/>
+                            <field name="is_customer"  attrs="{'invisible': [('all_customer','=',True)]}" string="is Customer" />
+                             <field name="is_consolidation" attrs="{'invisible': [('all_customer','=',True)]}"  string="is Consolidation" />
+
+
+                        </group>
+
+                        <footer>
+                            <button name="print_report" string="Print" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-secondary" special="cancel"/>
+                        </footer>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_pos" model="ir.actions.act_window">
+        <field name="name">Customer Invoice Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">pos.report</field>
+        <field name="view_id" ref="pos_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+
+    <menuitem id="pos_report_menu" name="Customer Invoice Report" parent="account.menu_finance_reports" action="action_pos" sequence="5"/>
+</odoo>
