@@ -7,7 +7,7 @@
     "website": "",
     "license": "AGPL-3",
     "depends": [
-        'base','account'
+        'base','account','product'
     ],
     "data": [
         "wizard/report_view.xml",

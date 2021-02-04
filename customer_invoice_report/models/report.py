@@ -15,3 +15,8 @@ class InheritedPartner(models.Model):
 
     partner_name_arabic = fields.Char()
     partner_address_arabic = fields.Char()
+
+class InheritedProduct(models.Model):
+    _inherit = "product.product"
+
+    product_name_arabic = fields.Char()

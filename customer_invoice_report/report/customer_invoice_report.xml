@@ -73,7 +73,7 @@
                                 <td style="font-size:16px;"><span style="font-weight:bold; ">TEL :</span> <span class="o_force_ltr" t-field="res_company.phone"/><span style="font-weight:bold;">Fax</span><span t-field="res_company.fax"/></td>
                             </tr>
                             <tr>
-                                <td style="font-size:16px;"><span style="font-weight:bold; ">Email :</span>301327474810003 <span t-field="res_company.email"/></td>
+                                <td style="font-size:16px;"><span style="font-weight:bold; ">Email :</span><span t-field="res_company.email"/></td>
                             </tr>
                         </table>
                     </td>
@@ -83,7 +83,7 @@
                                 <td style="text-align:right; font-size:16px;"><span  t-field="res_company.company_address_arabic"/><br></br><span  t-field="res_company.company_address_arabic2"/></td>
                             </tr>
                             <tr>
-                                <td style="text-align:right; font-size:16px;"><span  t-field="res_company.fax"/><span style="font-weight:bold;">فاكس</span><span t-field="res_company.phone"/><span style="font-weight:bold;">هاتف:</span></td>
+                                <td style="text-align:right; font-size:16px;"><span  t-field="res_company.fax"/><span style="font-weight:bold;"><span>فاكس</span></span><br></br><span t-field="res_company.phone"/><span style="font-weight:bold;"><span>هاتف</span></span></td>
                             </tr>
                             <tr>
                                 <td style="text-align:right; font-size:16px;"><span style="font-weight:bold; ">: بريد الكتروني</span><span t-field="res_company.email"/></td>
@@ -162,14 +162,18 @@
                             <tbody>
                                 <t t-set="serial_number" t-value="1"/>
                                  <t t-set="total" t-value="" />
-                                <tr t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id == s)" t-as="p">
-                                     <t t-set="flag" t-value="True" />
+                                 <t t-set="tax_ratio" t-value="" />
+                                 <t t-set="balance" t-value="" />
+                                <tr t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)" t-as="p">
+
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:16px;"> <span t-esc="serial_number"/></td>
-                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:16px;"><span t-field="p.product_id.name"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:16px;"><span t-field="p.product_id.name"/><br></br><span t-field="p.product_id.product_name_arabic"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-field="doc.invoice_date_due"/></td>
                                     <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-esc="p.price_subtotal"/></td>
 
                                     <t t-set="total" t-value="p.price_subtotal" />
+                                    <t t-set="tax_ratio" t-value="p.tax_ids[0].amount*total/100" />
+                                     <t t-set="balance" t-value="total-tax_ratio" />
                                     <t t-set="serial_number" t-value="serial_number+1"/>
 
                                 </tr>
@@ -183,14 +187,13 @@
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><span>ضريبة القيمة المضافة</span><br></br>VAT % </td>
-                                <t t-set="total"  t-value="doc.amount_total-doc.amount_untaxed" />
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'{0:,.3f}'.format(total)"/><br></br></td>
+
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="tax_ratio"/><br></br></td>
 
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; font-weight:bold;"><span>جمالي المطلوب</span><br></br>Rent payable after VAT</td>
-                                <t t-set="total2" t-value="doc.amount_untaxed+total" />
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;"><br></br><span t-esc="'{0:,.3f}'.format(total2)"/></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;"><br></br><span t-esc="balance"/></td>
                             </tr>
                         </table>
 
@@ -306,7 +309,7 @@
                                 <tr t-foreach="doc['line_items']" t-as="p">
 
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:18px;"> <span t-esc="serial_number"/></td>
-                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:18px;"><span t-esc="p.get('disc')"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:18px;"><span t-esc="p.get('disc')"/><br></br><span t-esc="p.get('name2')"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-weight:bold; font-size:18px;"><span t-esc="p.get('due_date')"/></td>
                                     <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-weight:bold; font-size:18px;"><span t-esc="p.get('amount_sar')"/></td>
                                     <t t-set="serial_number" t-value="serial_number+1"/>

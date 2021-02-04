@@ -22,8 +22,11 @@ class PosReport(models.TransientModel):
 
 
         id=[]
+        product_list=[]
+        st=[]
         total_value=0.0
         tax_ratio_amount=0.0
+
 
 
         all_invoice = self.env['account.move'].search([('invoice_date', '>=',start_date), ('invoice_date', '<=',end_date),('state','=','posted')])
@@ -38,7 +41,12 @@ class PosReport(models.TransientModel):
                 print(len(is_invoice))
                 for rec in is_invoice:
                     id.append(rec.id)
-                    for line in rec.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id == self.service_type.id):
+                    p_categ = self.env['product.product'].search([('categ_id','child_of',self.service_type.id)])
+                    for p in p_categ:
+                        st.append(p.categ_id.id)
+                    print('>>>>>>>>>>>>>',st)
+                    for line in rec.invoice_line_ids:
+                        print(line.product_id.name)
                         total_value = line.price_subtotal
                         print(';;;;;;;;', total_value)
                         if line.tax_ids:
@@ -50,7 +58,7 @@ class PosReport(models.TransientModel):
             else:
                 raise ValidationError(_("Records Can Not Found Between  %s  to  %s Dates") % (self.start_date, self.end_date))
 
-            print(tax_ratio_amount)
+            print('9999999999999',st)
             data = {
                 'ids':self.ids,
                 'model': self._name,
@@ -58,7 +66,7 @@ class PosReport(models.TransientModel):
                     'date_from': self.start_date,
                     'date_to': self.end_date,
                     'product_data':id,
-                    'serv':self.service_type.id,
+                    'serv':st,
                     't':tax_ratio_amount
                 },
             }
@@ -89,8 +97,11 @@ class PosReport(models.TransientModel):
                     invoice_number = str(rec.partner_id.name[:3]) + '-' + str(rec.invoice_date) + ','
                     invoice_date = str(rec.invoice_date) + ','
 
+                    p_categ = self.env['product.product'].search([('categ_id', 'child_of', self.service_type.id)])
+                    for pp in p_categ:
+                        st.append(pp.categ_id.id)
 
-                    for line in rec.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id == self.service_type.id):
+                    for line in rec.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in st):
 
                         total_value += line.price_subtotal
                         print(';;;;;;;;',total_value)
@@ -99,6 +110,7 @@ class PosReport(models.TransientModel):
                         tax_ratio_amount=tax_ratio * total_value / 100
                         vals = {
                             'disc': line.product_id.name,
+                            'name2':line.product_id.product_name_arabic,
                             'due_date': rec.invoice_date_due,
                             'amount_sar': line.price_subtotal,
 
