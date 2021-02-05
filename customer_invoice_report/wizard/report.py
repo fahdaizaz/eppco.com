@@ -36,22 +36,22 @@ class PosReport(models.TransientModel):
         if self.is_consolidation == False:
 
             if self.all_customer==True and all_invoice:
-                print('case1')
+
                 for rec in all_invoice:
                     id.append(rec.id)
                     for p in p_categ:
                         st.append(p.categ_id.id)
             elif self.is_customer and is_invoice:
-                print(len(is_invoice))
+
                 for rec in is_invoice:
                     id.append(rec.id)
                     for p in p_categ:
                         st.append(p.categ_id.id)
-                    print('>>>>>>>>>>>>>',st)
+
                     for line in rec.invoice_line_ids:
-                        print(line.product_id.name)
+
                         total_value = line.price_subtotal
-                        print(';;;;;;;;', total_value)
+
                         if line.tax_ids:
                             tax_ratio = line.tax_ids[0].amount
                         tax_ratio_amount = tax_ratio * total_value / 100
@@ -61,7 +61,7 @@ class PosReport(models.TransientModel):
             else:
                 raise ValidationError(_("Records Can Not Found Between  %s  to  %s Dates") % (self.start_date, self.end_date))
 
-            print('9999999999999',st)
+
             data = {
                 'ids':self.ids,
                 'model': self._name,
@@ -109,9 +109,9 @@ class PosReport(models.TransientModel):
 
                     for line in rec.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in st):
                         flag=True
-                        print('>>>>>>>>>>>>>>>>>>',flag)
+
                         total_value += line.price_subtotal
-                        print(';;;;;;;;',total_value)
+
                         if line.tax_ids:
                             tax_ratio = line.tax_ids[0].amount
                         tax_ratio_amount=tax_ratio * total_value / 100
