@@ -10,7 +10,7 @@
                     <field name="partner_name_arabic" string="Name(Arabic)"/>
                 </xpath>
                   <xpath expr="//field[@name='street2']" position="after">
-                    <field name="partner_address_arabic"/>
+                       <field name="partner_address_arabic" placeholder="Arabic Address"/>
                 </xpath>
             </field>
         </record>

@@ -31,17 +31,20 @@ class PosReport(models.TransientModel):
 
         all_invoice = self.env['account.move'].search([('invoice_date', '>=',start_date), ('invoice_date', '<=',end_date),('state','=','posted')])
         is_invoice = self.env['account.move'].search([('invoice_date', '>=', start_date),('invoice_date', '<=', end_date),('invoice_date', '<=', end_date),('state','=','posted'),('partner_id','=',self.is_customer.id)])
+        p_categ = self.env['product.product'].search([('categ_id', 'child_of', self.service_type.id)])
+
         if self.is_consolidation == False:
 
             if self.all_customer==True and all_invoice:
                 print('case1')
                 for rec in all_invoice:
                     id.append(rec.id)
+                    for p in p_categ:
+                        st.append(p.categ_id.id)
             elif self.is_customer and is_invoice:
                 print(len(is_invoice))
                 for rec in is_invoice:
                     id.append(rec.id)
-                    p_categ = self.env['product.product'].search([('categ_id','child_of',self.service_type.id)])
                     for p in p_categ:
                         st.append(p.categ_id.id)
                     print('>>>>>>>>>>>>>',st)
@@ -75,7 +78,10 @@ class PosReport(models.TransientModel):
             if self.is_customer:
                 customer_list = []
                 discription = []
+                flag=False
                 invoice_number = ''
+                partner_name_arabic=''
+                partner_street=''
                 invoice_date = ''
                 vat_no = ''
                 street = ''
@@ -102,7 +108,8 @@ class PosReport(models.TransientModel):
                         st.append(pp.categ_id.id)
 
                     for line in rec.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in st):
-
+                        flag=True
+                        print('>>>>>>>>>>>>>>>>>>',flag)
                         total_value += line.price_subtotal
                         print(';;;;;;;;',total_value)
                         if line.tax_ids:
@@ -116,7 +123,7 @@ class PosReport(models.TransientModel):
 
                         }
                         discription.append(vals)
-
+                print(partner_name_arabic)
                 vals = {
 
                     'partner_name': p,
@@ -140,6 +147,7 @@ class PosReport(models.TransientModel):
                     'form': {
                         'date_from': self.start_date,
                         'date_to': self.end_date,
+                        'f':flag,
                         'product_data2':customer_list
 
                     },
@@ -183,6 +191,7 @@ class test2(models.AbstractModel):
     def _get_report_values(self,docids,data=None):
         date_f = data['form']['date_from']
         date_t = data['form']['date_to']
+        ff = data['form']['f']
         product_data2 = data['form']['product_data2']
 
         return {
@@ -190,7 +199,8 @@ class test2(models.AbstractModel):
             'docs':product_data2,
             'doc_model':'account.move',
             'df': date_f,
-            'dt': date_t
+            'dt': date_t,
+            'flag':ff
 
 
         }

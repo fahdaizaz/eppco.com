@@ -10,7 +10,7 @@
                     <div class="oe_title">
                         <label for="company_name_arabic" class="oe_edit_only"/>
                         <h1>
-                            <field name="company_name_arabic"/>
+                            <field name="company_name_arabic" placeholder="Arabic Address"/>
                         </h1>
                     </div>
                 </xpath>

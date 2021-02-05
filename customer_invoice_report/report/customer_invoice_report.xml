@@ -14,7 +14,7 @@
     </record>
 
     <report id="action_report_daily_sales"
-            string="Daily Sales Report"
+            string="Customer Invoice Report"
             model="pos.report"
             report_type="qweb-pdf"
             name="customer_invoice_report.daily_sales_report_new"
@@ -23,7 +23,7 @@
     />
 
     <report id="action_report_daily_sales2"
-            string="Daily Sales Report"
+            string="Customer Invoice Report"
             model="pos.report"
             report_type="qweb-pdf"
             name="customer_invoice_report.daily_sales_report_new2"
@@ -42,13 +42,13 @@
                     <td width="70%">
                         <table width="100%">
                             <tr>
-                                <td style="font-size:24px; font-weight:bold; font-family:'Calibri'; text-align:center;"><span  t-field="res_company.company_name_arabic" ></span></td>
+                                <td style="font-size:24px; font-weight:bold; font-family:'Calibri'; text-align:right;"><span  t-field="res_company.company_name_arabic" ></span></td>
                             </tr>
                             <tr>
-                                <td style="font-size:24px; font-family:'Calibri'; font-weight:bold; text-align:center;"><span  t-field="res_company.name" ></span></td>
+                                <td style="font-size:24px; font-family:'Calibri'; font-weight:bold; text-align:right;"><span  t-field="res_company.name" ></span></td>
                             </tr>
                             <tr>
-                                <td style="font-size:18px; font-family:'Calibri'; font-weight:bold; text-align:center;"><span style="font-family:'Calibri';"  t-field="res_company.account_no" />:VAT No./<span style="font-family:'Calibri';"  t-field="res_company.vat" ></span></td>
+                                <td style="font-size:18px; font-family:'Calibri'; font-weight:bold; text-align:right;"><span style="font-family:'Calibri';"  t-field="res_company.account_no" />:VAT No./<span style="font-family:'Calibri';"  t-field="res_company.vat" ></span></td>
                             </tr>
                         </table>
                     </td>
@@ -101,12 +101,11 @@
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="doc">
                     <div class="page">
-                        <t t-call="customer_invoice_report.custom_header"></t>
-                        <t t-call="customer_invoice_report.custom_footer"></t>
+                        <t t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)" t-call="customer_invoice_report.custom_header"></t>
+                        <t t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)" t-call="customer_invoice_report.custom_footer"></t>
                         <style>
                             .headings{
                             font-size:18px;
-                            font-weight:bold;
                             font-family:'Calibri';
                             }
                             .text
@@ -116,7 +115,7 @@
                             }
 
                         </style>
-                        <table width="100%" style="margin-top:20px;">
+                        <table width="100%" style="margin-top:20px;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)">
                             <tr>
                                 <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px">Tax Invoice / الفاتورة</td> <td width="25%"></td>
                             </tr>
@@ -124,7 +123,7 @@
 
 
 
-                        <table width="100%" style="margin-top:20px;">
+                        <table width="100%" style="margin-top:20px;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)">
 
                             <tr>
                                 <td  width="50%" class="headings">Invoice No / رقم الفاتورة :</td>
@@ -136,7 +135,7 @@
                             </tr>
                             <tr>
                                 <td width="50%" class="headings">Customer Name /  اسم العميل:</td>
-                                <td width="50%"  class="text"> <span t-field="doc.partner_id.name"/><br></br><span t-field="doc.partner_id.partner_name_arabic"/></td>
+                                <td width="50%"  class="text"><span t-field="doc.partner_id.partner_name_arabic"/><br></br><span t-field="doc.partner_id.name"/></td>
 
                             </tr>
                             <tr>
@@ -151,7 +150,7 @@
 
                         </table>
 
-                        <table width="100%" style="margin-top:20px; border:1px solid black;">
+                        <table width="100%" style="margin-top:20px; border:1px solid black;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)" >
 
                             <tr>
                                 <td width="10%" style="text-align:center; font-family:'Calibri'; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>الرقم</span><br></br>SR NO</td>
@@ -161,9 +160,9 @@
                             </tr>
                             <tbody>
                                 <t t-set="serial_number" t-value="1"/>
-                                 <t t-set="total" t-value="" />
-                                 <t t-set="tax_ratio" t-value="" />
-                                 <t t-set="balance" t-value="" />
+                                 <t t-set="total" t-value="0.0" />
+                                 <t t-set="tax_ratio" t-value="0.0" />
+                                 <t t-set="balance" t-value="0.0" />
                                 <tr t-foreach="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)" t-as="p">
 
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:16px;"> <span t-esc="serial_number"/></td>
@@ -180,38 +179,38 @@
                             </tbody>
                         </table>
 
-                        <table width="100%" style="margin-top:20px; border:1px solid black;" >
+                        <table width="100%" style="margin-top:20px; border:1px solid black;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)" >
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; border-bottom:1px solid black; font-weight:bold;"><span>ايجار المعدات قبل ضريبة القيمة المضافة</span><br></br>Rent payable before VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="total"/><br></br></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'%.3f'% total"/><br></br></td>
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><span>ضريبة القيمة المضافة</span><br></br>VAT % </td>
 
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="tax_ratio"/><br></br></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'{:,.3f}'.format(tax_ratio)"/><br></br></td>
 
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; font-weight:bold;"><span>جمالي المطلوب</span><br></br>Rent payable after VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;"><br></br><span t-esc="balance"/></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;"><br></br><span t-esc="'{:,.3f}'.format(balance)"/></td>
                             </tr>
                         </table>
 
 
 
 
-                        <div style="margin-top:20px; font-size:14px; page-break-before:auto;">
+                        <div style="margin-top:20px; font-size:14px; page-break-before:auto;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)">
                             <span  style="" t-field="res_company.company_details" ></span>
                         </div>
 
 
-                        <table width="100%" style="margin-top:20px; page-break-before:auto;">
+                        <table width="100%" style="margin-top:20px; page-break-before:auto;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)">
                             <tr>
                                 <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px;"><span>ختم وتوقيع<br></br></span>Stamp and Sign</td> <td width="25%"></td>
                             </tr>
                         </table>
 
-                        <table width="100%" style="margin-top:20px; page-break-before:auto;">
+                        <table width="100%" style="margin-top:20px; page-break-before:auto;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)">
                             <tr>
                                 <td width="50%" style="text-align:left; font-size:14px;  padding:3px; ">
                                     <ul>
@@ -245,8 +244,8 @@
             <t t-call="web.basic_layout">
                 <t t-foreach="docs" t-as="doc">
                     <div class="page">
-                        <t t-call="customer_invoice_report.custom_header"></t>
-                        <t t-call="customer_invoice_report.custom_footer"></t>
+                        <t t-if="flag==True" t-call="customer_invoice_report.custom_header"></t>
+                        <t t-if="flag==True" t-call="customer_invoice_report.custom_footer"></t>
                         <style>
                             .headings{
                             font-size:18px;
@@ -259,7 +258,7 @@
                             }
 
                         </style>
-                        <table width="100%" style="margin-top:20px;">
+                        <table width="100%" style="margin-top:20px;" t-if="flag==True">
                             <tr>
                                 <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px">Tax Invoice / الفاتورة</td> <td width="25%"></td>
                             </tr>
@@ -267,7 +266,7 @@
 
 
 
-                        <table width="100%" style="margin-top:20px;">
+                        <table width="100%" style="margin-top:20px;" t-if="flag==True">
 
                             <tr>
                                 <td width="50%" class="headings">Invoice No / رقم الفاتورة :</td>
@@ -281,7 +280,7 @@
                             </tr>
                             <tr>
                                 <td width="50%" class="headings">Customer Name /  اسم العميل:</td>
-                                <td width="50%" class="text"> <span t-esc="doc['partner_name']"/><br></br><span t-esc="doc['partner_name2']"/></td>
+                                <td width="50%" class="text"><span t-esc="doc['partner_name2']"/><br></br><span t-esc="doc['partner_name']"/></td>
 
 
                             </tr>
@@ -296,7 +295,7 @@
 
                         </table>
 
-                        <table width="100%" style="margin-top:20px; border:1px solid black;">
+                        <table width="100%" style="margin-top:20px; border:1px solid black;" t-if="flag==True">
 
                             <tr>
                                 <td width="10%" style="text-align:center; background-color:#b9d0ed; padding:5px; border-right:1px solid black; font-weight:bold; font-size:18px;"><span>الرقم</span><br></br>SR NO</td>
@@ -319,34 +318,34 @@
                             </tbody>
                         </table>
 
-                        <table width="100%" style="margin-top:20px; border:1px solid black;">
+                        <table width="100%" style="margin-top:20px; border:1px solid black;" t-if="flag==True">
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; border-bottom:1px solid black; font-weight:bold;"><span>ايجار المعدات قبل ضريبة القيمة المضافة</span><br></br>Rent payable before VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{0:,.3f}'.format(doc['amount_untax'])"/></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{:,.3f}'.format(doc['amount_untax'])"/></td>
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><span>ضريبة القيمة المضافة</span><br></br>VAT % </td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{0:,.3f}'.format(doc['tax_value'])"/> </td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{:,.3f}'.format(doc['tax_value'])"/> </td>
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; font-weight:bold;"><span>جمالي المطلوب</span><br></br>Rent payable after VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  font-weight:bold;"><br></br><span t-esc="'{0:,.3f}'.format(doc['total_value'])"/></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  font-weight:bold;"><br></br><span t-esc="'{:,.3f}'.format(doc['total_value'])"/></td>
                             </tr>
                         </table>
 
-                        <div style="margin-top:20px; font-size:14px; page-break-before:auto;">
+                        <div style="margin-top:20px; font-size:14px; page-break-before:auto;" t-if="flag==True">
                             <span  style="" t-field="res_company.company_details" ></span>
                         </div>
 
 
-                        <table width="100%" style="margin-top:15px; page-break-before:auto;">
+                        <table width="100%" style="margin-top:15px; page-break-before:auto;" t-if="flag==True">
                             <tr>
                                 <td width="25%"></td> <td width="50%" style="text-align:center; font-weight:bold; font-size:24px;"><span>ختم وتوقيع<br></br></span>Stamp and Sign</td> <td width="25%"></td>
                             </tr>
                         </table>
 
 
-                        <table width="100%" style="margin-top:20px; page-break-before:auto;">
+                        <table width="100%" style="margin-top:20px; page-break-before:auto;" t-if="flag==True">
                             <tr>
                                 <td width="50%" style="text-align:left; font-size:14px;  padding:3px; ">
                                     <ul>
