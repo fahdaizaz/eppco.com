@@ -168,7 +168,7 @@
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:16px;"> <span t-esc="serial_number"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:16px;"><span t-field="p.product_id.product_name_arabic"/><br></br><span t-field="p.product_id.name"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-field="doc.invoice_date_due"/></td>
-                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span  t-esc="p.price_subtotal" t-options='{"widget": "monetary", "display_currency": o.user.company_id.currency_id}'/></td>
+                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span  t-esc="p.price_subtotal" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/></td>
 
                                     <t t-set="total" t-value="p.price_subtotal" />
                                     <t t-set="tax_ratio" t-value="p.tax_ids[0].amount*total/100" />
