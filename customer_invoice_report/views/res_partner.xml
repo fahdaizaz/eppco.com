@@ -17,6 +17,18 @@
 
          <record id="view_res_product_form_inherited" model="ir.ui.view">
             <field name="name">res.product.form.inherit.report</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="product_name_arabic" string="Name(Arabic)"/>
+                </xpath>
+            </field>
+        </record>
+
+
+         <record id="view_res_product_product_form_inherited" model="ir.ui.view">
+            <field name="name">res.product.form.inherit.report2</field>
             <field name="model">product.product</field>
             <field name="inherit_id" ref="product.product_normal_form_view"/>
             <field name="arch" type="xml">

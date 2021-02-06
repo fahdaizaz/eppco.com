@@ -86,7 +86,7 @@
                                 <td style="text-align:right; font-size:16px;"><span  t-field="res_company.fax"/><span style="font-weight:bold;"><span>فاكس</span></span><br></br><span t-field="res_company.phone"/><span style="font-weight:bold;"><span>هاتف</span></span></td>
                             </tr>
                             <tr>
-                                <td style="text-align:right; font-size:16px;"><span style="font-weight:bold; ">: بريد الكتروني</span><span t-field="res_company.email"/></td>
+                        <td style="text-align:right; font-size:16px;"><span t-field="res_company.email"/><span style="font-weight:bold; ">: بريد الكتروني</span></td>
                             </tr>
                         </table>
                     </td>
@@ -168,11 +168,11 @@
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:16px;"> <span t-esc="serial_number"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:16px;"><span t-field="p.product_id.product_name_arabic"/><br></br><span t-field="p.product_id.name"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-field="doc.invoice_date_due"/></td>
-                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-esc="'{:,.3f}'.format(p.price_subtotal)"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black;  font-size:16px;"><span t-esc="'{:,.2f}'.format(p.price_subtotal)"/></td>
 
                                     <t t-set="total" t-value="p.price_subtotal" />
                                     <t t-set="tax_ratio" t-value="p.tax_ids[0].amount*total/100" />
-                                     <t t-set="balance" t-value="total-tax_ratio" />
+                                     <t t-set="balance" t-value="total+tax_ratio" />
                                     <t t-set="serial_number" t-value="serial_number+1"/>
 
                                 </tr>
@@ -182,17 +182,17 @@
                         <table width="100%" style="margin-top:20px; border:1px solid black;" t-if="doc.invoice_line_ids.filtered(lambda x: x.product_id.categ_id.id in s)" >
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; border-bottom:1px solid black; font-weight:bold;"><span>ايجار المعدات قبل ضريبة القيمة المضافة</span><br></br>Rent payable before VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'{:,.3f}'.format(total)"/><br></br></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'{:,.2f}'.format(total)"/><br></br></td>
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><span>ضريبة القيمة المضافة</span><br></br>VAT % </td>
 
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'{:,.3f}'.format(tax_ratio)"/><br></br></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;"><br></br><span t-esc="'{:,.2f}'.format(tax_ratio)"/><br></br></td>
 
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; font-weight:bold;"><span>جمالي المطلوب</span><br></br>Rent payable after VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;"><br></br><span t-esc="'{:,.3f}'.format(balance)"/></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;"><br></br><span t-esc="'{:,.2f}'.format(balance)"/></td>
                             </tr>
                         </table>
 
@@ -310,7 +310,7 @@
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black;  border-top:1px solid black; border-bottom:1px solid black; font-weight:bold; font-size:18px;"> <span t-esc="serial_number"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-size:18px;"><span t-esc="p.get('name2')"/><br></br><span t-esc="p.get('disc')"/></td>
                                     <td width="10%" style="text-align:center; padding:5px; border-right:1px solid black; border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-weight:bold; font-size:18px;"><span t-esc="p.get('due_date')"/></td>
-                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-weight:bold; font-size:18px;"><span t-esc="'{:,.3f}'.format(p.get('amount_sar'))"/></td>
+                                    <td width="10%" style="text-align:center; padding:5px;  border-top:1px solid black; border-bottom:1px solid black; border-left:1px solid black; font-weight:bold; font-weight:bold; font-size:18px;"><span t-esc="'{:,.2f}'.format(p.get('amount_sar'))"/></td>
                                     <t t-set="serial_number" t-value="serial_number+1"/>
                                 </tr>
 
@@ -321,15 +321,15 @@
                         <table width="100%" style="margin-top:20px; border:1px solid black;" t-if="flag==True">
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; border-bottom:1px solid black; font-weight:bold;"><span>ايجار المعدات قبل ضريبة القيمة المضافة</span><br></br>Rent payable before VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{:,.3f}'.format(doc['amount_untax'])" /></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{:,.2f}'.format(doc['amount_untax'])" /></td>
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><span>ضريبة القيمة المضافة</span><br></br>VAT % </td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{:,.3f}'.format(doc['tax_value'])"/> </td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  border-bottom:1px solid black;  font-weight:bold;"><br></br><span t-esc="'{:,.2f}'.format(doc['tax_value'])"/> </td>
                             </tr>
                             <tr>
                                 <td width="70%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px; font-weight:bold;"><span>جمالي المطلوب</span><br></br>Rent payable after VAT</td>
-                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  font-weight:bold;"><br></br><span t-esc="'{:,.3f}'.format(doc['total_value'])"/></td>
+                                <td width="30%" style="text-align:center; font-size:18px; border-right:1px solid black; padding:5px;  font-weight:bold;"><br></br><span t-esc="'{:,.2f}'.format(doc['total_value'])"/></td>
                             </tr>
                         </table>
 
